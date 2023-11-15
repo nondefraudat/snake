@@ -4,7 +4,7 @@
 
 class MapFactory {
 public:
-	MapFactory() noexcept;
+	MapFactory() noexcept = default;
 
-	MapPtr generateMap() noexcept;
+	MapPtr testMap() noexcept;
 };

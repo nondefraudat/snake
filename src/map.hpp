@@ -1,22 +1,22 @@
 #pragma once
 
-#include "cell.hpp"
+#include "node.hpp"
 #include <vector>
+#include <memory>
 
 using MapPtr = std::shared_ptr<class Map>;
 
 class Map {
 public:
-	Map(const size_t width, const size_t height) noexcept;
+	Map(const size_t rowCount, const size_t colCount) noexcept;
 
-	size_t getWidth() const noexcept;
-	size_t getHeight() const noexcept;
+	size_t getRowCount() const noexcept;
+	size_t getColCount() const noexcept;
+	NodePtr getNode(const size_t row, const size_t col) const noexcept;
 
-	CellPtr getCell(const size_t column, const size_t row) noexcept;
-
-	void setCell(const size_t column, const size_t row, const CellPtr& cell) noexcept;
+	void setNode(const size_t row, const size_t col, const NodePtr& node) noexcept;
 
 private:
-	size_t width, height, cellCount;
-	std::vector<CellPtr> cells;
+	size_t rowCount, colCount, cellCount;
+	std::vector<NodePtr> data;
 };

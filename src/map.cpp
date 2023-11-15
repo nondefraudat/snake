@@ -1,30 +1,30 @@
 #include "map.hpp"
 
-Map::Map(const size_t width, const size_t height) noexcept 
-		: width(width), height(height), cellCount(width*height) {
-	for (int i = 0; i < cellCount; i++) {
-		cells.push_back(nullptr);
+Map::Map(const size_t rowCount, const size_t colCount) noexcept
+		: rowCount(rowCount), colCount(colCount), cellCount(rowCount*colCount) {
+	for (size_t i = 0; i < cellCount; i++) {
+		data.push_back(nullptr);
 	}
 }
 
-size_t Map::getWidth() const noexcept {
-	return width;
+size_t Map::getRowCount() const noexcept {
+	return rowCount;
 }
 
-size_t Map::getHeight() const noexcept {
-	return height;
+size_t Map::getColCount() const noexcept {
+	return colCount;
 }
 
-CellPtr Map::getCell(const size_t column, const size_t row) noexcept {
-	if (column > width || row > height) {
+NodePtr Map::getNode(const size_t row, const size_t col) const noexcept {
+	if (row > rowCount || col > colCount) {
 		return nullptr;
 	}
-	return cells[column*height + row];
+	return data.at(row*colCount + col);
 }
 
-void Map::setCell(const size_t column, const size_t row, const CellPtr& cell) noexcept {
-	if (column > width || row > height) {
+void Map::setNode(const size_t row, const size_t col, const NodePtr& node) noexcept {
+	if (row > rowCount || col > colCount) {
 		return;
 	}
-	cells[column * height + row] = cell;
+	data[row*colCount + col] = node;
 }
