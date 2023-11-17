@@ -61,14 +61,20 @@ void SnakeApp::renderMap() noexcept {
 	const float magicNumber = 50;
 	for (int row = 0; row < map->getRowCount(); row++) {
 		for (int col = 0; col < map->getColCount(); col++) {
-			/*if (!map->getNode(row, col)) {
-				continue;
-			}*/
 			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 			SDL_FRect rect = {
 				col*magicNumber, row*magicNumber, magicNumber, magicNumber
 			};
 			SDL_RenderRect(renderer, &rect);
+			NodePtr node = map->getNode(row, col);
+			if (node) {
+				const double newMagic = node->getSize()*magicNumber;
+				const double offset = (magicNumber - newMagic)/2.;
+				SDL_FRect rect = {
+					col*magicNumber + offset, row*magicNumber + offset, newMagic, newMagic
+				};
+				SDL_RenderFillRect(renderer, &rect);
+			}
 		}
 	}
 }
