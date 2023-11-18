@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mapfactory.hpp"
+#include "snake.hpp"
 #include <SDL3/SDL.h>
 
 class SnakeApp {
@@ -15,6 +16,7 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	MapPtr map;
+	Snake snake;
 
 	SnakeApp() noexcept;
 

@@ -32,6 +32,7 @@ int SnakeApp::exec() noexcept {
 
 SnakeApp::SnakeApp() noexcept {
 	map = MapFactory().testMap();
+	snake = Snake(5, map);
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		// TODO: Error
 	}
@@ -61,13 +62,14 @@ void SnakeApp::renderMap() noexcept {
 	const float magicNumber = 50;
 	for (int row = 0; row < map->getRowCount(); row++) {
 		for (int col = 0; col < map->getColCount(); col++) {
-			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			SDL_SetRenderDrawColor(renderer, 0x1F, 0x1F, 0x1F, 0xFF);
 			SDL_FRect rect = {
 				col*magicNumber, row*magicNumber, magicNumber, magicNumber
 			};
 			SDL_RenderRect(renderer, &rect);
 			NodePtr node = map->getNode(row, col);
 			if (node) {
+				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				const double newMagic = node->getSize()*magicNumber;
 				const double offset = (magicNumber - newMagic)/2.;
 				SDL_FRect rect = {
