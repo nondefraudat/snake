@@ -1,14 +1,30 @@
 #pragma once
 
-#include "map.hpp"
-#include <vector>
+#include "node.hpp"
+#include <memory>
+#include <list>
+
+using SnakeNodePtr = std::shared_ptr<class SnakeNode>;
+
+class SnakeNode : public Node {
+public:
+	SnakeNodePtr prev = nullptr, next = nullptr;
+
+	SnakeNode(const size_t row = 0, const size_t col = 0,
+			SnakeNodePtr prev = nullptr,
+			SnakeNodePtr next = nullptr) noexcept
+			: Node(row, col), prev(prev), next(next) { }
+};
 
 class Snake {
 public:
-	Snake() noexcept = default;
-	Snake(const size_t size, const MapPtr& map) noexcept;
+	Snake(const size_t size) noexcept;
+
+	void setPos(const size_t row, const size_t col) noexcept;
+	void move(const int rowOffset, const int colOffset) noexcept;
+
+	std::list<NodePtr> getNodes() const noexcept;
 
 private:
-	std::vector<NodePtr> body;
-	MapPtr map;
+	SnakeNodePtr head, tail;
 };

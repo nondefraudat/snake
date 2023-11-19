@@ -1,22 +1,19 @@
 #pragma once
 
 #include "node.hpp"
-#include <vector>
-#include <memory>
-
-using MapPtr = std::shared_ptr<class Map>;
+#include <SDL3/SDL.h>
+#include <list>
 
 class Map {
 public:
-	Map(const size_t rowCount, const size_t colCount) noexcept;
+	Map(const double rowCount, const double colCount) noexcept;
 
-	size_t getRowCount() const noexcept;
-	size_t getColCount() const noexcept;
-	NodePtr getNode(const size_t row, const size_t col) const noexcept;
+	std::list<SDL_FRect> getRects() const noexcept;
 
-	void setNode(const size_t row, const size_t col, const NodePtr& node) noexcept;
+	void addNode(const NodePtr& node) noexcept;
+	void addNodes(const std::list<NodePtr>& nodes) noexcept;
 
 private:
-	size_t rowCount, colCount, cellCount;
-	std::vector<NodePtr> data;
+	size_t rowCount, colCount;
+	std::list<NodePtr> nodes;
 };

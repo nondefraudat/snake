@@ -2,27 +2,12 @@
 
 #include <memory>
 
-using NodePtr = std::shared_ptr<class Node>;
-using SnakeBodyPtr = std::shared_ptr<class SnakeBody>;
+using NodePtr = std::shared_ptr<struct Node>;
 
 class Node {
 public:
-	Node(const double size = .5) noexcept;
+	size_t row, col;
 
-	double getSize() const noexcept;
-	void setSize(const double size) noexcept;
-
-private:
-	double size = .5;
-};
-
-class SnakeBody : public Node {
-public:
-	SnakeBody() noexcept = default;
-
-	void setNextNode(const SnakeBodyPtr& node) noexcept;
-	SnakeBodyPtr getNextNode() const noexcept;
-
-private:
-	SnakeBodyPtr nextNode = nullptr;
+	Node(const size_t row = 0, const size_t col = 0) noexcept
+			: row(row), col(col) { }
 };

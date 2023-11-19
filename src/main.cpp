@@ -1,5 +1,4 @@
 ﻿#include "snakeapp.hpp"
-#include "mapfactory.hpp"
 #include <iostream>
 
 using namespace std;

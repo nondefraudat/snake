@@ -20,19 +20,18 @@ int SnakeApp::exec() noexcept {
 			if (event.type == SDL_EVENT_QUIT) {
 				exec = false;
 			}
-			//else if (event.type == SDL_EVENT_KEY_DOWN)
-			//{
-			//	processKeycode(event.key.keysym.sym);
-			//}
+			else if (event.type == SDL_EVENT_KEY_DOWN)
+			{
+				processKeycode(event.key.keysym.sym);
+			}
 		}
 		updateWindow();
 	}
 	return 0;
 }
 
-SnakeApp::SnakeApp() noexcept {
-	map = MapFactory().testMap();
-	snake = Snake(5, map);
+SnakeApp::SnakeApp() noexcept : snake(3), map(10, 10) {
+	map.addNodes(snake.getNodes());
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		// TODO: Error
 	}
@@ -55,28 +54,25 @@ void SnakeApp::updateWindow() noexcept {
 }
 
 void SnakeApp::processKeycode(const SDL_Keycode keycode) noexcept {
-	 
+	switch (keycode) {
+		case SDLK_UP: {
+			return snake.move(-1, 0);
+		}
+		case SDLK_DOWN: {
+			return snake.move(1, 0);
+		}
+		case SDLK_LEFT: {
+			return snake.move(0, -1);
+		}
+		case SDLK_RIGHT: {
+			return snake.move(0, 1);
+		}
+	}
 }
 
 void SnakeApp::renderMap() noexcept {
-	const float magicNumber = 50;
-	for (int row = 0; row < map->getRowCount(); row++) {
-		for (int col = 0; col < map->getColCount(); col++) {
-			SDL_SetRenderDrawColor(renderer, 0x1F, 0x1F, 0x1F, 0xFF);
-			SDL_FRect rect = {
-				col*magicNumber, row*magicNumber, magicNumber, magicNumber
-			};
-			SDL_RenderRect(renderer, &rect);
-			NodePtr node = map->getNode(row, col);
-			if (node) {
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				const double newMagic = node->getSize()*magicNumber;
-				const double offset = (magicNumber - newMagic)/2.;
-				SDL_FRect rect = {
-					col*magicNumber + offset, row*magicNumber + offset, newMagic, newMagic
-				};
-				SDL_RenderFillRect(renderer, &rect);
-			}
-		}
+	for (const SDL_FRect& rect : map.getRects()) {
+		SDL_SetRenderDrawColor(renderer, 0xAF, 0xAF, 0xAF, 0xFF);
+		SDL_RenderFillRect(renderer, &rect);
 	}
 }

@@ -1,30 +1,28 @@
 #include "map.hpp"
 
-Map::Map(const size_t rowCount, const size_t colCount) noexcept
-		: rowCount(rowCount), colCount(colCount), cellCount(rowCount*colCount) {
-	for (size_t i = 0; i < cellCount; i++) {
-		data.push_back(nullptr);
+using namespace std;
+
+Map::Map(const double rowCount, const double colCount) noexcept
+		: rowCount(rowCount), colCount(colCount) { }
+
+std::list<SDL_FRect> Map::getRects() const noexcept {
+	static const double factor = 10.;
+	list<SDL_FRect> rects;
+	for (const NodePtr& node : nodes) {
+		const SDL_FRect rect {
+			factor*node->col, factor*node->row, factor, factor
+		};
+		rects.push_back(rect);
 	}
+	return rects;
 }
 
-size_t Map::getRowCount() const noexcept {
-	return rowCount;
+void Map::addNode(const NodePtr& node) noexcept {
+	nodes.push_back(node);
 }
 
-size_t Map::getColCount() const noexcept {
-	return colCount;
-}
-
-NodePtr Map::getNode(const size_t row, const size_t col) const noexcept {
-	if (row > rowCount || col > colCount) {
-		return nullptr;
+void Map::addNodes(const std::list<NodePtr>& nodes) noexcept {
+	for (const NodePtr node : nodes) {
+		addNode(node);
 	}
-	return data.at(row*colCount + col);
-}
-
-void Map::setNode(const size_t row, const size_t col, const NodePtr& node) noexcept {
-	if (row > rowCount || col > colCount) {
-		return;
-	}
-	data[row*colCount + col] = node;
 }
