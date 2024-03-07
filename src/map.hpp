@@ -1,19 +1,14 @@
 #pragma once
 
-#include "node.hpp"
-#include <SDL3/SDL.h>
-#include <list>
+#include "framework.hpp"
+#include "shape.hpp"
 
-class Map {
+class Map : public Shape {
 public:
-	Map(const double rowCount, const double colCount) noexcept;
+    Map() noexcept;
 
-	std::list<SDL_FRect> getRects() const noexcept;
-
-	void addNode(const NodePtr& node) noexcept;
-	void addNodes(const std::list<NodePtr>& nodes) noexcept;
+    virtual void render(Renderer renderer) noexcept override;
 
 private:
-	size_t rowCount, colCount;
-	std::list<NodePtr> nodes;
+
 };

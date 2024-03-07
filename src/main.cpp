@@ -1,9 +1,12 @@
-﻿#include "snakeapp.hpp"
-#include <iostream>
-
-using namespace std;
+﻿#include "application.hpp"
+#include <cassert>
 
 int main() {
-	SnakeApp app = SnakeApp::getInstance();
-	return app.exec();
+	assert(SDL_Init(SDL_INIT_VIDEO) >= 0);
+	
+	auto& application = Application::getInstance();
+	int exitStatus = application.execute();
+	
+	SDL_Quit();
+	return exitStatus;
 }
