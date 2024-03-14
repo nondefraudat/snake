@@ -1,12 +1,9 @@
 ﻿#include "application.hpp"
+#include <SDL3/SDL.h>
 #include <cassert>
 
 int main() {
-	assert(SDL_Init(SDL_INIT_VIDEO) >= 0);
-	
 	auto& application = Application::getInstance();
 	int exitStatus = application.execute();
-	
-	SDL_Quit();
 	return exitStatus;
 }
