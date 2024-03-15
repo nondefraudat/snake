@@ -23,11 +23,15 @@ void Map::render(SDL_Renderer* renderer) noexcept {
             }
             switch (content) {
                 case CellContent::SnakeNode: {
-                    SDL_SetRenderDrawColor(renderer, 0x3B, 0x44, 0x4B, 0xFF);
+                    SDL_SetRenderDrawColor(renderer, 0x87, 0x76, 0x80, 0xFF);
                     break;
                 }
                 case CellContent::Static: {
                     SDL_SetRenderDrawColor(renderer, 0x1A, 0x1A, 0x1A, 0xFF);
+                    break;
+                }
+                case CellContent::Food: {
+                    SDL_SetRenderDrawColor(renderer, 0xCA, 0xB0, 0x36, 0xFF);
                     break;
                 }
             }

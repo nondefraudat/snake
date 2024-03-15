@@ -1,7 +1,8 @@
 #include "snake.hpp"
+#include <random>
 
-Snake::Snake(std::shared_ptr<Map> map) noexcept : map(map) {
-    nodes.reserve(100);
+Snake::Snake(std::shared_ptr<Map> map) noexcept
+        : map(map), engine(randomDevice()), generator(0, map->getSize()) {
     auto mapSize = map->getSize();
     Map::CellCoordinates node = { mapSize/2, mapSize/2 };
     for (size_t i = 0; i < size; i++) {
@@ -9,6 +10,7 @@ Snake::Snake(std::shared_ptr<Map> map) noexcept : map(map) {
         nodes.push_back(node);
         node.row++;
     }
+    respawnFood();
 }
 
 bool Snake::setDirection(Direction direction) noexcept {
@@ -21,19 +23,18 @@ bool Snake::setDirection(Direction direction) noexcept {
 }
 
 bool Snake::move() noexcept {
-    auto prevNode = defineNextHeadPosition();
-    for (auto& node : nodes) {
-        auto nodeBuffer = node;
-        if (node.row == prevNode.row) {
-            node.column = prevNode.column;
-        }
-        else {
-            node.row = prevNode.row;
-        }
-        map->setCellContent(node, Map::CellContent::SnakeNode);
-        prevNode = nodeBuffer;
+    auto targetCell = defineNextHeadPosition();
+    auto nextCellContent = map->getCellContent(targetCell);
+    if (nextCellContent == Map::CellContent::SnakeNode) {
+        return false;
     }
-    map->setCellContent(prevNode, Map::CellContent::None);
+    if (nextCellContent == Map::CellContent::Food) {
+        respawnFood();
+        raiseMove(targetCell);
+    }
+    else if (nextCellContent == Map::CellContent::None) {
+        normalMove(targetCell);
+    }
     lastMove = nextMove;
     return true;
 }
@@ -70,6 +71,29 @@ Map::CellCoordinates Snake::defineNextHeadPosition() const noexcept {
         }
     }
     return head;
+}
+
+void Snake::respawnFood() noexcept {
+    Map::CellCoordinates newFoodPosition;
+    newFoodPosition.row = generator(engine);
+    newFoodPosition.column = generator(engine);
+    while (map->getCellContent(newFoodPosition) != Map::CellContent::None) {
+        newFoodPosition.row = generator(engine);
+        newFoodPosition.column = generator(engine);
+    }
+    map->setCellContent(newFoodPosition, Map::CellContent::Food);
+}
+
+void Snake::raiseMove(const Map::CellCoordinates& targetCell) noexcept {
+    nodes.push_front(targetCell);
+    map->setCellContent(targetCell, Map::CellContent::SnakeNode);
+}
+
+void Snake::normalMove(const Map::CellCoordinates& targetCell) noexcept {
+    map->setCellContent(nodes.back(), Map::CellContent::None);
+    nodes.pop_back();
+    nodes.push_front(targetCell);
+    map->setCellContent(targetCell, Map::CellContent::SnakeNode);
 }
 
 bool Snake::isDirectionPossible(Direction direction) const noexcept {

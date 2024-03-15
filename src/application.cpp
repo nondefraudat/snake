@@ -49,14 +49,14 @@ void Application::processEvents() noexcept {
 }
 
 void Application::updateWindow() noexcept {
-    SDL_SetRenderDrawColorFloat(renderer, 0.f, 0.f, 0.f, 1.f);
+    SDL_SetRenderDrawColor(renderer, 0x10, 0x15, 0x1D, 0xFF);
     SDL_RenderClear(renderer);
     map->render(renderer);
     SDL_RenderPresent(renderer);
 }
 
 void Application::processBeat() noexcept {
-    snake->move();
+    assert(snake->move());
 }
 
 void Application::processEvent(const SDL_Event& eventBuffer) noexcept {
