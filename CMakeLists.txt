@@ -8,6 +8,7 @@ file(GLOB PROJECT_SOURCES "src/*")
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE "deps/SDL/include")
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
+set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_CXX_STANDARD 17)
 
 if (WIN32)
         add_custom_command(TARGET ${PROJECT_NAME}

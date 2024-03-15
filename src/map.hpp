@@ -1,19 +1,25 @@
 #pragma once
 
-#include "node.hpp"
-#include <SDL3/SDL.h>
-#include <list>
+#include <array>
+
+struct SDL_Renderer;
 
 class Map {
 public:
-	Map(const double rowCount, const double colCount) noexcept;
+    enum class CellContent { None = 0, Static, Movable, Food, SnakeNode };
+    struct CellCoordinates {
+        size_t row; size_t column;
+    };
 
-	std::list<SDL_FRect> getRects() const noexcept;
-
-	void addNode(const NodePtr& node) noexcept;
-	void addNodes(const std::list<NodePtr>& nodes) noexcept;
+    Map() noexcept;
+    void render(SDL_Renderer* renderer) noexcept;
+    size_t getSize() const noexcept;
+    CellContent getCellContent(
+            const CellCoordinates& coordinates) const noexcept;
+    bool setCellContent(const CellCoordinates& coordinates,
+            CellContent content) noexcept;
 
 private:
-	size_t rowCount, colCount;
-	std::list<NodePtr> nodes;
+    static constexpr size_t size = 50;
+    std::array<CellContent, size*size> data;
 };

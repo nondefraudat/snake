@@ -1,9 +1,9 @@
-﻿#include "snakeapp.hpp"
-#include <iostream>
-
-using namespace std;
+﻿#include "application.hpp"
+#include <SDL3/SDL.h>
+#include <cassert>
 
 int main() {
-	SnakeApp app = SnakeApp::getInstance();
-	return app.exec();
+	auto& application = Application::getInstance();
+	int exitStatus = application.execute();
+	return exitStatus;
 }
