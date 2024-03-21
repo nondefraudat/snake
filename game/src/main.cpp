@@ -1,5 +1,5 @@
 ﻿#include "application.hpp"
-#include <SDL3/SDL.h>
+#include <SDL.h>
 #include <cassert>
 
 int main() {

@@ -1,5 +1,5 @@
 #include "map.hpp"
-#include <SDL3/SDL.h>
+#include <SDL.h>
 #include <cassert>
 
 Map::Map() noexcept {

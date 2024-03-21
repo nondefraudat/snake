@@ -2,7 +2,7 @@
 
 #include "snake.hpp"
 #include "map.hpp"
-#include <SDL3/SDL.h>
+#include <SDL.h>
 #include <memory>
 
 class Application {
