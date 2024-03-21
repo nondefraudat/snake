@@ -1,12 +1,12 @@
 #include "snake.hpp"
 #include <random>
 
-Snake::Snake(std::shared_ptr<Map> map) noexcept
+Snake::Snake(std::shared_ptr<GameBoard> map) noexcept
         : map(map), engine(randomDevice()), generator(0, map->getSize()) {
     auto mapSize = map->getSize();
-    Map::CellCoordinates node = { mapSize/2, mapSize/2 };
+    GameBoard::CellCoordinates node = { mapSize/2, mapSize/2 };
     for (size_t i = 0; i < size; i++) {
-        map->setCellContent(node, Map::CellContent::Static);
+        map->setCellContent(node, GameBoard::CellContent::Static);
         nodes.push_back(node);
         node.row++;
     }
@@ -25,21 +25,21 @@ bool Snake::setDirection(Direction direction) noexcept {
 bool Snake::move() noexcept {
     auto targetCell = defineNextHeadPosition();
     auto nextCellContent = map->getCellContent(targetCell);
-    if (nextCellContent == Map::CellContent::SnakeNode) {
+    if (nextCellContent == GameBoard::CellContent::SnakeNode) {
         return false;
     }
-    if (nextCellContent == Map::CellContent::Food) {
+    if (nextCellContent == GameBoard::CellContent::Food) {
         respawnFood();
         raiseMove(targetCell);
     }
-    else if (nextCellContent == Map::CellContent::None) {
+    else if (nextCellContent == GameBoard::CellContent::None) {
         normalMove(targetCell);
     }
     lastMove = nextMove;
     return true;
 }
 
-Map::CellCoordinates Snake::defineNextHeadPosition() const noexcept {
+GameBoard::CellCoordinates Snake::defineNextHeadPosition() const noexcept {
     auto head = nodes.front();
     auto mapSize = map->getSize();
     switch (nextMove) {
@@ -74,26 +74,26 @@ Map::CellCoordinates Snake::defineNextHeadPosition() const noexcept {
 }
 
 void Snake::respawnFood() noexcept {
-    Map::CellCoordinates newFoodPosition;
+    GameBoard::CellCoordinates newFoodPosition;
     newFoodPosition.row = generator(engine);
     newFoodPosition.column = generator(engine);
-    while (map->getCellContent(newFoodPosition) != Map::CellContent::None) {
+    while (map->getCellContent(newFoodPosition) != GameBoard::CellContent::None) {
         newFoodPosition.row = generator(engine);
         newFoodPosition.column = generator(engine);
     }
-    map->setCellContent(newFoodPosition, Map::CellContent::Food);
+    map->setCellContent(newFoodPosition, GameBoard::CellContent::Food);
 }
 
-void Snake::raiseMove(const Map::CellCoordinates& targetCell) noexcept {
+void Snake::raiseMove(const GameBoard::CellCoordinates& targetCell) noexcept {
     nodes.push_front(targetCell);
-    map->setCellContent(targetCell, Map::CellContent::SnakeNode);
+    map->setCellContent(targetCell, GameBoard::CellContent::SnakeNode);
 }
 
-void Snake::normalMove(const Map::CellCoordinates& targetCell) noexcept {
-    map->setCellContent(nodes.back(), Map::CellContent::None);
+void Snake::normalMove(const GameBoard::CellCoordinates& targetCell) noexcept {
+    map->setCellContent(nodes.back(), GameBoard::CellContent::None);
     nodes.pop_back();
     nodes.push_front(targetCell);
-    map->setCellContent(targetCell, Map::CellContent::SnakeNode);
+    map->setCellContent(targetCell, GameBoard::CellContent::SnakeNode);
 }
 
 bool Snake::isDirectionPossible(Direction direction) const noexcept {

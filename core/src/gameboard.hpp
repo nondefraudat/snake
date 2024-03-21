@@ -1,17 +1,16 @@
 #pragma once
-
 #include <array>
 
 struct SDL_Renderer;
 
-class Map {
+class GameBoard {
 public:
     enum class CellContent { None = 0, Static, Movable, Food, SnakeNode };
     struct CellCoordinates {
         size_t row; size_t column;
     };
 
-    Map() noexcept;
+    GameBoard() noexcept;
     void render(SDL_Renderer* renderer) noexcept;
     size_t getSize() const noexcept;
     CellContent getCellContent(

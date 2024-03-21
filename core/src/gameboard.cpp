@@ -1,14 +1,14 @@
-#include "map.hpp"
+#include "gameboard.hpp"
 #include <SDL.h>
 #include <cassert>
 
-Map::Map() noexcept {
+GameBoard::GameBoard() noexcept {
     for (size_t i = 0; i < size*size; i++) {
         data[i] = CellContent::None;
     }
 }
 
-void Map::render(SDL_Renderer* renderer) noexcept {
+void GameBoard::render(SDL_Renderer* renderer) noexcept {
     SDL_Rect viewport;
     SDL_GetRenderViewport(renderer, &viewport);
     auto cellSize = float(viewport.w)/size;
@@ -40,19 +40,19 @@ void Map::render(SDL_Renderer* renderer) noexcept {
     }
 }
 
-size_t Map::getSize() const noexcept {
+size_t GameBoard::getSize() const noexcept {
     return size;
 }
 
-Map::CellContent
-Map::getCellContent(const CellCoordinates &coordinates) const noexcept {
+GameBoard::CellContent
+GameBoard::getCellContent(const CellCoordinates &coordinates) const noexcept {
     if (coordinates.row >= size || coordinates.column >= size) {
         return CellContent::None;
     }
     return data[coordinates.row*size + coordinates.column];
 }
 
-bool Map::setCellContent(const CellCoordinates &coordinates,
+bool GameBoard::setCellContent(const CellCoordinates &coordinates,
         CellContent content) noexcept {
     if (coordinates.row >= size || coordinates.column >= size) {
         return false;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "snake.hpp"
-#include "map.hpp"
+#include <gameboard.hpp>
 #include <SDL.h>
 #include <memory>
 
@@ -15,7 +15,7 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     bool quit = false;
-    std::shared_ptr<Map> map;
+    std::shared_ptr<GameBoard> map;
     std::shared_ptr<Snake> snake;
 
     Application() noexcept;

@@ -6,6 +6,10 @@ endif ()
 
 add_subdirectory(SDL)
 
+add_subdirectory(core)
+target_include_directories(core PUBLIC SDL/include/SDL)
+target_link_libraries(core PUBLIC SDL3::SDL3)
+
 add_subdirectory(game)
-target_include_directories(game PRIVATE SDL/include/SDL3)
-target_link_libraries(game PRIVATE SDL3::SDL3)
+target_include_directories(game PRIVATE core/src)
+target_link_libraries(game PRIVATE core)

@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
-project(game)
+project(core)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 file(GLOB_RECURSE PROJECT_SOURCES src/*)
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_CXX_STANDARD 17)

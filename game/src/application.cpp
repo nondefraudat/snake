@@ -37,7 +37,7 @@ Application::Application() noexcept {
     renderer = SDL_CreateRenderer(window, nullptr,
             SDL_RENDERER_ACCELERATED);
     assert(renderer != nullptr);
-    map = std::make_shared<Map>();
+    map = std::make_shared<GameBoard>();
     snake = std::make_shared<Snake>(map);
 }
 
