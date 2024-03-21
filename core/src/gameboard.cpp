@@ -4,59 +4,47 @@
 
 GameBoard::GameBoard() noexcept {
     for (size_t i = 0; i < size*size; i++) {
-        data[i] = CellContent::None;
+        data[i] = nullptr;
     }
 }
 
 void GameBoard::render(SDL_Renderer* renderer) noexcept {
     SDL_Rect viewport;
     SDL_GetRenderViewport(renderer, &viewport);
-    auto cellSize = float(viewport.w)/size;
-    CellCoordinates cell = { 0, 0 };
-    SDL_FRect rect = { 0.f, 0.f, cellSize, cellSize };
-    for ( ; cell.row < size; cell.row++, rect.y += cellSize) {
-        for ( cell.column = 0, rect.x = 0 ; cell.column < size;
-                cell.column++, rect.x += cellSize) {
-            auto content = getCellContent(cell);
-            if (content == CellContent::None) {
+    int cellSize = viewport.w/size;
+    Position cell = { 0, 0 };
+    SDL_Rect cellViewPort = { 0, 0, cellSize, cellSize };
+    for ( ; cell.row < size; cell.row++, cellViewPort.y += cellSize) {
+        for ( cell.col = 0, cellViewPort.x = 0 ; cell.col < size;
+                cell.col++, cellViewPort.x += cellSize) {
+            auto figure = getFigure(cell);
+            if (!figure) {
                 continue;
             }
-            switch (content) {
-                case CellContent::SnakeNode: {
-                    SDL_SetRenderDrawColor(renderer, 0x87, 0x76, 0x80, 0xFF);
-                    break;
-                }
-                case CellContent::Static: {
-                    SDL_SetRenderDrawColor(renderer, 0x1A, 0x1A, 0x1A, 0xFF);
-                    break;
-                }
-                case CellContent::Food: {
-                    SDL_SetRenderDrawColor(renderer, 0xCA, 0xB0, 0x36, 0xFF);
-                    break;
-                }
-            }
-            assert(SDL_RenderFillRect(renderer, &rect) == 0);
+            SDL_SetRenderViewport(renderer, &cellViewPort);
+            figure->render(renderer);
         }
     }
+    SDL_SetRenderViewport(renderer, &viewport);
 }
 
 size_t GameBoard::getSize() const noexcept {
     return size;
 }
 
-GameBoard::CellContent
-GameBoard::getCellContent(const CellCoordinates &coordinates) const noexcept {
-    if (coordinates.row >= size || coordinates.column >= size) {
-        return CellContent::None;
+std::shared_ptr<Figure>
+GameBoard::getFigure(const Position& pos) const noexcept {
+    if (pos.row >= size || pos.col >= size) {
+        return nullptr;
     }
-    return data[coordinates.row*size + coordinates.column];
+    return data[pos.row*size + pos.col];
 }
 
-bool GameBoard::setCellContent(const CellCoordinates &coordinates,
-        CellContent content) noexcept {
-    if (coordinates.row >= size || coordinates.column >= size) {
+bool GameBoard::setFigure(const Position& pos,
+        std::shared_ptr<Figure> content) noexcept {
+    if (pos.row >= size || pos.col >= size) {
         return false;
     }
-    data[coordinates.row*size + coordinates.column] = content;
+    data[pos.row*size + pos.col] = content;
     return true;
 }

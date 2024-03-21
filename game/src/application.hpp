@@ -1,6 +1,6 @@
 #pragma once
 
-#include "snake.hpp"
+#include <snake.hpp>
 #include <gameboard.hpp>
 #include <SDL.h>
 #include <memory>
