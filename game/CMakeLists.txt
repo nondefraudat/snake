@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.17)
+project(game)
+file(GLOB PROJECT_SOURCES "src/*")
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+set_target_properties(${PROJECT_NAME} PROPERTIES CMAKE_CXX_STANDARD 17)
