@@ -1,8 +1,8 @@
 ﻿#include "application.hpp"
 #include <SDL.h>
-#include <cassert>
+#include <SDL_main.h>
 
-int main() {
+int main(int argc, char* argv[]) {
 	auto& application = Application::getInstance();
 	int exitStatus = application.execute();
 	return exitStatus;

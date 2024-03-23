@@ -3,3 +3,7 @@
 out/
 build/
 CMakePresets.json
+.gradle/
+.cxx/
+local.properties
+.idea/
