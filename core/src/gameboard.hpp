@@ -14,39 +14,24 @@ public:
     
     void render(SDL_Renderer* renderer) noexcept;
     
-    inline Size getSize() const noexcept {
-        return size;
-    }
-    inline std::shared_ptr<Figure> getFigure(
-            const Position& pos) const noexcept {
-        return data[translate(pos)];
-    }
-    inline void setFigure(const Position& pos,
-            std::shared_ptr<Figure> content) noexcept {
-        data[translate(pos)] = content;
-    }
-    inline void setCameraPos(const Position& pos) noexcept {
-        camera = pos;
-    }
+    Size getSize() const noexcept;
+    std::shared_ptr<Figure>
+    getFigure(const Position& pos) const noexcept;
+    void setFigure(const Position& pos,
+            std::shared_ptr<Figure> content) noexcept;
+    void setCameraPos(const Position& pos) noexcept;
 
 private:
     static constexpr int cellSize = 10;
-    static constexpr Size size = { 150, 150 };
+    static constexpr int width = 500;
+    static constexpr int height = 500;
     std::array<std::shared_ptr<Figure>,
-            size.height*size.width> data;
+            height*width> data;
     Position camera;
 
     static int countCellCoord(float side) noexcept;
     static int countRenderSide(float side) noexcept;
 
-    inline static int
-    translate(int value, int limit) noexcept {
-        value %= limit;
-        return value < 0 ? limit + value : value;
-    }
-    inline int translate(const Position& pos) const noexcept {
-        return (translate(pos.row, size.height)*size.width +
-                translate(pos.col, size.width));
-    }
-    
+    static int translate(int value, int limit) noexcept;
+    int translate(const Position& pos) const noexcept;    
 };

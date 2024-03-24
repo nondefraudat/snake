@@ -4,7 +4,7 @@
 #include <cmath>
 
 GameBoard::GameBoard() noexcept {
-    for (size_t i = 0; i < size.width*size.height; i++) {
+    for (size_t i = 0; i < width*height; i++) {
         data[i] = nullptr;
     }
 }
@@ -57,10 +57,38 @@ void GameBoard::render(SDL_Renderer* renderer) noexcept {
     SDL_SetRenderViewport(renderer, &viewport);
 }
 
+Size GameBoard::getSize() const noexcept {
+    return { width, height };
+}
+
+std::shared_ptr<Figure>
+GameBoard::getFigure(const Position &pos) const noexcept {
+    return data[translate(pos)];
+}
+
+void GameBoard::setFigure(const Position &pos,
+        std::shared_ptr<Figure> content) noexcept {
+    data[translate(pos)] = content;
+}
+
+void GameBoard::setCameraPos(const Position &pos) noexcept {
+    camera = pos;
+}
+
 int GameBoard::countCellCoord(float side) noexcept {
     return (side - cellSize)/2;
 }
 
 int GameBoard::countRenderSide(float side) noexcept {
     return std::ceilf(side/cellSize);
+}
+
+int GameBoard::translate(int value, int limit) noexcept {
+    value %= limit;
+    return value < 0 ? limit + value : value;
+}
+
+int GameBoard::translate(const Position &pos) const noexcept {
+    return (translate(pos.row, height)*width +
+            translate(pos.col, width));
 }
