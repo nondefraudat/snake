@@ -1,9 +1,10 @@
 #include "gameboard.hpp"
 #include <SDL.h>
 #include <cassert>
+#include <cmath>
 
 GameBoard::GameBoard() noexcept {
-    for (size_t i = 0; i < size*size; i++) {
+    for (size_t i = 0; i < size.width*size.height; i++) {
         data[i] = nullptr;
     }
 }
@@ -11,11 +12,39 @@ GameBoard::GameBoard() noexcept {
 void GameBoard::render(SDL_Renderer* renderer) noexcept {
     SDL_Rect viewport;
     SDL_GetRenderViewport(renderer, &viewport);
-    int cellSize = viewport.w/size;
-    Position cell = { 0, 0 };
-    SDL_Rect cellViewPort = { 0, 0, cellSize, cellSize };
-    for ( ; cell.row < size; cell.row++, cellViewPort.y += cellSize) {
-        for ( cell.col = 0, cellViewPort.x = 0 ; cell.col < size;
+
+    Position centerCellRenderOffset = {
+        countCellCoord(viewport.h),
+        countCellCoord(viewport.w)
+    };
+
+    Size renderPart = {
+        countRenderSide(centerCellRenderOffset.col)*2 + 1,
+        countRenderSide(centerCellRenderOffset.row)*2 + 1
+    };
+
+    Position renderStartCoord = {
+        (viewport.h - renderPart.height*cellSize)/2,
+        (viewport.w - renderPart.width*cellSize)/2
+    };
+
+    Position startCellPos {
+        camera.row - countRenderSide(centerCellRenderOffset.row),
+        camera.col - countRenderSide(centerCellRenderOffset.col)
+    };
+
+    SDL_Rect cellViewPort = {
+        renderStartCoord.col,
+        renderStartCoord.row,
+        cellSize, cellSize
+    };
+
+    for (Position cell = startCellPos;
+            cell.row < (startCellPos.row + renderPart.height);
+            cell.row++, cellViewPort.y += cellSize) {
+        for (cell.col = startCellPos.col,
+                cellViewPort.x = renderStartCoord.col;
+                cell.col < (startCellPos.col + renderPart.width);
                 cell.col++, cellViewPort.x += cellSize) {
             auto figure = getFigure(cell);
             if (!figure) {
@@ -28,23 +57,10 @@ void GameBoard::render(SDL_Renderer* renderer) noexcept {
     SDL_SetRenderViewport(renderer, &viewport);
 }
 
-size_t GameBoard::getSize() const noexcept {
-    return size;
+int GameBoard::countCellCoord(float side) noexcept {
+    return (side - cellSize)/2;
 }
 
-std::shared_ptr<Figure>
-GameBoard::getFigure(const Position& pos) const noexcept {
-    if (pos.row >= size || pos.col >= size) {
-        return nullptr;
-    }
-    return data[pos.row*size + pos.col];
-}
-
-bool GameBoard::setFigure(const Position& pos,
-        std::shared_ptr<Figure> content) noexcept {
-    if (pos.row >= size || pos.col >= size) {
-        return false;
-    }
-    data[pos.row*size + pos.col] = content;
-    return true;
+int GameBoard::countRenderSide(float side) noexcept {
+    return std::ceilf(side/cellSize);
 }

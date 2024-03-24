@@ -5,10 +5,10 @@
 
 Snake::Snake(std::shared_ptr<GameBoard> gameBoard) noexcept
         : gameBoard(gameBoard), engine(randomDevice()),
-        generator(0, gameBoard->getSize() - 1),
         food(std::make_shared<Food>()) {
     auto gameBoardSize = gameBoard->getSize();
-    Position pos = { gameBoardSize/2, gameBoardSize/2 };
+    Position pos = { gameBoardSize.height/2, gameBoardSize.width/2 };
+    gameBoard->setCameraPos(pos);
     for (size_t i = 0; i < size; i++) {
         std::shared_ptr<Node> node = std::make_shared<Node>(pos);
         gameBoard->setFigure(pos, node);
@@ -29,6 +29,7 @@ bool Snake::setDirection(Direction direction) noexcept {
 
 bool Snake::move() noexcept {
     auto targetPos = defineNextHeadPosition();
+    gameBoard->setCameraPos(targetPos);
     auto figure = gameBoard->getFigure(targetPos);
     if (std::dynamic_pointer_cast<Node>(figure)) {
         return false;
@@ -49,27 +50,27 @@ Position Snake::defineNextHeadPosition() const noexcept {
     auto mapSize = gameBoard->getSize();
     switch (nextMove) {
         case Direction::Left: {
-            headPos.col = headPos.col == 0
-                ? mapSize - 1
-                : headPos.col - 1;
+            headPos.col = (headPos.col == 0
+                    ? mapSize.width - 1
+                    : headPos.col - 1);
             break;
         }
         case Direction::Right: {
             headPos.col++;
-            if (headPos.col == mapSize) {
+            if (headPos.col == mapSize.width) {
                 headPos.col = 0;
             }
             break;
         }
         case Direction::Up: {
-            headPos.row = headPos.row == 0
-                ? mapSize - 1
-                : headPos.row - 1;
+            headPos.row = (headPos.row == 0
+                    ? mapSize.height - 1
+                    : headPos.row - 1);
             break;
         }
         case Direction::Down: {
             headPos.row++;
-            if (headPos.row == mapSize) {
+            if (headPos.row == mapSize.height) {
                 headPos.row = 0;
             }
             break;
@@ -79,12 +80,17 @@ Position Snake::defineNextHeadPosition() const noexcept {
 }
 
 void Snake::respawnFood() noexcept {
+    auto snakePos = nodes.front()->getPos();
+    std::uniform_int_distribution<size_t> vGenerator(
+            snakePos.row - 10, snakePos.row + 10);
+    std::uniform_int_distribution<size_t> hGenerator(
+            snakePos.col - 10, snakePos.col + 10);
     Position newFoodPosition;
-    newFoodPosition.row = generator(engine);
-    newFoodPosition.col = generator(engine);
+    newFoodPosition.row = vGenerator(engine);
+    newFoodPosition.col = hGenerator(engine);
     while (gameBoard->getFigure(newFoodPosition)) {
-        newFoodPosition.row = generator(engine);
-        newFoodPosition.col = generator(engine);
+        newFoodPosition.row = vGenerator(engine);
+        newFoodPosition.col = hGenerator(engine);
     }
     gameBoard->setFigure(newFoodPosition, food);
 }
