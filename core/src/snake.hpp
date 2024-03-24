@@ -38,7 +38,6 @@ private:
 
     std::random_device randomDevice;
     std::default_random_engine engine;
-    std::uniform_int_distribution<size_t> generator;
     
     bool isDirectionPossible(Direction direction) const noexcept;
     Position defineNextHeadPosition() const noexcept;

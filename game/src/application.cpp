@@ -31,8 +31,8 @@ int Application::execute() noexcept {
 
 Application::Application() noexcept {
     assert(SDL_Init(SDL_INIT_VIDEO) >= 0);
-	window = SDL_CreateWindow("snake", 500, 500,
-            SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("snake", -1, -1,
+            SDL_WINDOW_FULLSCREEN);
     assert(window != nullptr);
     renderer = SDL_CreateRenderer(window, nullptr,
             SDL_RENDERER_ACCELERATED);
@@ -60,6 +60,7 @@ void Application::processBeat() noexcept {
 }
 
 void Application::processEvent(const SDL_Event& eventBuffer) noexcept {
+    static SDL_Point touchLocation;
     switch (eventBuffer.type) {
         case SDL_EVENT_QUIT: {
             quit = true;
@@ -67,6 +68,31 @@ void Application::processEvent(const SDL_Event& eventBuffer) noexcept {
         }
         case SDL_EVENT_KEY_DOWN: {
             return processKeycode(eventBuffer.key.keysym.scancode);
+        }
+        case SDL_EVENT_FINGER_DOWN: {
+            touchLocation.x = eventBuffer.tfinger.x;
+            touchLocation.y = eventBuffer.tfinger.y;
+            return;
+        }
+        case SDL_EVENT_FINGER_MOTION: {
+            if (std::abs(eventBuffer.tfinger.dy) >
+                    abs(eventBuffer.tfinger.dx)) {
+                if (eventBuffer.tfinger.dy > 0) {
+                    snake->setDirection(Snake::Direction::Down);
+                }
+                else {
+                    snake->setDirection(Snake::Direction::Up);
+                }
+            }
+            else {
+                if (eventBuffer.tfinger.dx < 0) {
+                    snake->setDirection(Snake::Direction::Left);
+                }
+                else {
+                    snake->setDirection(Snake::Direction::Right);
+                }
+            }
+            return;
         }
     }
 }
