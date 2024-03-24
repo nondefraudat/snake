@@ -7,3 +7,4 @@ CMakePresets.json
 .cxx/
 local.properties
 .idea/
+release/
