@@ -14,18 +14,12 @@ Application &Application::getInstance() noexcept {
 }
 
 int Application::execute() noexcept {
-    auto timer = SDL_AddTimer(100,
-            [](Uint32 interval, void* application) -> Uint32 {
-                reinterpret_cast<Application*>(application)
-                        ->processBeat();
-                return interval;
-            }, this);
     quit = false;
     while (!quit) {
         processEvents();
         updateWindow();
+        processBeat();
     }
-    SDL_RemoveTimer(timer);
     return 0;
 }
 

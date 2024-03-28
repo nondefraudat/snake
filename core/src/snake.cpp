@@ -28,6 +28,13 @@ bool Snake::setDirection(Direction direction) noexcept {
 }
 
 bool Snake::move() noexcept {
+    static auto ticksCache = SDL_GetTicks();
+    auto currentTicks = SDL_GetTicks();
+    auto delta = currentTicks - ticksCache;
+    if (delta < 100) {
+        return true;
+    }
+    ticksCache = currentTicks;
     auto targetPos = defineNextHeadPosition();
     gameBoard->setCameraPos(targetPos);
     auto figure = gameBoard->getFigure(targetPos);
